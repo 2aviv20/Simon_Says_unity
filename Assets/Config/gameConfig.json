@@ -1,0 +1,23 @@
+{
+    "Easy":{
+        "Buttons":4,
+        "PointForStep":1,
+        "GameDuration": 50,
+        "RepeatMode": "True",
+        "GameSpeed":1
+    },
+    "Medium":{
+        "Buttons":5,
+        "PointForStep":2,
+        "GameDuration": 45,
+        "RepeatMode": "True",
+        "GameSpeed":1.25
+    },
+    "Hard":{
+        "Buttons":6,
+        "PointForStep":3,
+        "GameDuration": 30,
+        "RepeatMode": "False",
+        "GameSpeed":1.5
+    }
+}
