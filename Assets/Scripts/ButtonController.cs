@@ -34,6 +34,7 @@ public class ButtonController : MonoBehaviour
         if (!ishighlight)
         {
             highlightState();
+            FindObjectOfType<GameController>().onButtonPressed(colorName);
         }
     }
 

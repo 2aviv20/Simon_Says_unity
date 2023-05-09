@@ -9,7 +9,7 @@ public class GameController : MonoBehaviour
 {
     //enum ButtonColorsEnum = Enums.ButtonColorsEnum;
     [SerializeField] public GameObject[] simonButtons;
-    private List<ButtonColorsEnum> sequence = new List<ButtonColorsEnum> {
+    private List<ButtonColorsEnum> startDemoSequence = new List<ButtonColorsEnum> {
         ButtonColorsEnum.red,
         ButtonColorsEnum.green,
         ButtonColorsEnum.yellow,
@@ -19,8 +19,10 @@ public class GameController : MonoBehaviour
         ButtonColorsEnum.yellow,
         ButtonColorsEnum.blue
     };
-    Dictionary<ButtonColorsEnum, GameObject> buttonsDict = new Dictionary<ButtonColorsEnum, GameObject>();
+    private List<ButtonColorsEnum> gameSequence = new List<ButtonColorsEnum>();
+    private List<ButtonColorsEnum> playerInputSequence = new List<ButtonColorsEnum>();
 
+    Dictionary<ButtonColorsEnum, GameObject> buttonsDict = new Dictionary<ButtonColorsEnum, GameObject>();
     // Start is called before the first frame update
     void Start()
     {
@@ -28,11 +30,15 @@ public class GameController : MonoBehaviour
         {
             buttonsDict.Add(btn.GetComponent<ButtonController>().colorName, btn);
         }
-        StartCoroutine(runDemo(simonButtons));
+        nextSequence();
+        //StartCoroutine(playSequence(startDemoSequence));
+        StartCoroutine(playSequence(gameSequence,0.5f));
+
     }
 
-    IEnumerator runDemo(GameObject[] simonButtons)
+    IEnumerator playSequence(List<ButtonColorsEnum> sequence, float speed =0.2f)
     {
+        yield return new WaitForSeconds(0.3f);
         foreach (ButtonColorsEnum seq in sequence) {
             yield return new WaitForSeconds(0.2f);
 
@@ -41,7 +47,42 @@ public class GameController : MonoBehaviour
         }
     }
 
-    
+
+    void nextSequence() {
+        int randomNumber = Random.Range(1, 7);
+        gameSequence.Add((ButtonColorsEnum)randomNumber);
+        playerInputSequence.Clear();
+    }
+
+    //Invoked from ButtonController.cs OnMouseDown()
+    public void onButtonPressed(ButtonColorsEnum color) {
+        playerInputSequence.Add(color);
+        if (playerInputSequence.Count == gameSequence.Count) {
+            bool keepPlaying = compareSequence(gameSequence, playerInputSequence);
+            if (keepPlaying)
+            {
+                nextSequence();
+                StartCoroutine(playSequence(gameSequence));
+            }
+            else {
+                gameOver();
+            }
+
+        }
+    }
+
+    bool compareSequence(List<ButtonColorsEnum> gameSequence, List<ButtonColorsEnum> playerInputSequence) {
+        for (int i = 0; i < gameSequence.Count; i++) {
+            if (gameSequence[i] != playerInputSequence[i]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    void gameOver() {
+
+    }
     // Update is called once per frame
     void Update()
     {
