@@ -20,7 +20,7 @@ public class AudioManager : MonoBehaviour
        
     }
 
-    public void PlaySound(ButtonColorsEnum name){
+    public void PlaySound(SoundManagerEnum name){
         foreach(Sound s in sounds){
             if(s.name == name){
                 // if(!s.source.isPlaying){
@@ -30,7 +30,7 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    public void StopSound(ButtonColorsEnum name){
+    public void StopSound(SoundManagerEnum name){
         foreach(Sound s in sounds){
             if(s.name == name){
                 s.source.Stop();

@@ -40,9 +40,27 @@ public class ButtonController : MonoBehaviour
 
     public void highlightState() {
         this.GetComponent<Renderer>().material = highlight;
-        FindObjectOfType<AudioManager>().PlaySound(colorName);
+        FindObjectOfType<AudioManager>().PlaySound(colorNameToSound(colorName));
         ishighlight = true;
         Invoke("normalState", 0.3f);
+    }
+
+    public SoundManagerEnum colorNameToSound(ButtonColorsEnum colorName) {
+        switch(colorName){
+            case ButtonColorsEnum.red:
+                return SoundManagerEnum.red;
+            case ButtonColorsEnum.green:
+                return SoundManagerEnum.green;
+            case ButtonColorsEnum.blue: 
+                return SoundManagerEnum.blue;
+            case ButtonColorsEnum.orange:
+                return SoundManagerEnum.orange;
+            case ButtonColorsEnum.pink:
+                return SoundManagerEnum.pink;
+            case ButtonColorsEnum.yellow:
+                return SoundManagerEnum.yellow;
+        }
+        return SoundManagerEnum.none;
     }
 
     private void normalState() {

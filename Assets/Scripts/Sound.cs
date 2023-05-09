@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Sound
 {
-    public ButtonColorsEnum name;
+    public SoundManagerEnum name;
     public AudioClip clip;
     public float volume;
     public bool loop;
