@@ -16,6 +16,15 @@ public class ReadConfig : MonoBehaviour
         public Config[] config;
     }
 
+    [System.Serializable]
+    [XmlRoot("ConfigXml")]
+    public class ConfigXml
+    {
+        [XmlArray("MyArray")]
+        [XmlArrayItem("Item")]
+        public List<Config> config = new List<Config>();
+
+    }
     public Config[] loadGameConfig() {
         if (jsonFilePath != "" && File.Exists(Application.dataPath + jsonFilePath))
         {
@@ -40,11 +49,31 @@ public class ReadConfig : MonoBehaviour
     }
 
     public Config[] readXmlConfig() {
+        string path = Application.dataPath + xmlFilePath;
+
+        if (File.Exists(path))
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(ConfigXml));
+            StreamReader reader = new StreamReader(path);
+            ConfigXml data = (ConfigXml)serializer.Deserialize(reader);
+            reader.Close();
+
+            // Access the array data
+            foreach (Config item in data.config)
+            {
+                Debug.Log(item);
+            }
+        }
+        else
+        {
+            Debug.Log("File does not exist.");
+        }
         //string xmlString = File.ReadAllText(Application.dataPath + xmlFilePath);
-        XmlSerializer serializer = new XmlSerializer(typeof(ConfigList));
-        StreamReader reader = new StreamReader(Application.dataPath + xmlFilePath);
-        ConfigList gameConfig = (ConfigList)serializer.Deserialize(reader.BaseStream);
-        reader.Close();
-        return gameConfig.config;
+        //XmlSerializer serializer = new XmlSerializer(typeof(ConfigList));
+        //StreamReader reader = new StreamReader(Application.dataPath + xmlFilePath);
+        //ConfigList gameConfig = (ConfigList)serializer.Deserialize(reader.BaseStream);
+        //reader.Close();
+        //return gameConfig.config;
+        return null;
     }
 }

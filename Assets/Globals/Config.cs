@@ -6,5 +6,5 @@ public class Config
     public int PointForStep;
     public int GameDuration;
     public bool RepeatMode;
-    public int GameSpeed;
+    public float GameSpeed;
 }

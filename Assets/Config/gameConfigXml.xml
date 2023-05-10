@@ -1,27 +1,29 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<root>
-	<config>
+<ConfigXml>
+	<MyArray>
+		<Item>
 		<Level>Easy</Level>
 		<Buttons>4</Buttons>
 		<PointForStep>1</PointForStep>
 		<GameDuration>50</GameDuration>
-		<RepeatMode>True</RepeatMode>
+		<RepeatMode>1</RepeatMode>
 		<GameSpeed>1</GameSpeed>
-	</config>
-	<config>
-		<Level>Medium</Level>
-		<Buttons>5</Buttons>
-		<PointForStep>2</PointForStep>
-		<GameDuration>45</GameDuration>
-		<RepeatMode>True</RepeatMode>
-		<GameSpeed>1.25</GameSpeed>
-	</config>
-	<config>
-		<Level>Hard</Level>
-		<Buttons>6</Buttons>
-		<PointForStep>3</PointForStep>
-		<GameDuration>30</GameDuration>
-		<RepeatMode>False</RepeatMode>
-		<GameSpeed>1.5</GameSpeed>
-	</config>
-</root>
+		</Item>
+		<Item>
+			<Level>Medium</Level>
+			<Buttons>5</Buttons>
+			<PointForStep>2</PointForStep>
+			<GameDuration>45</GameDuration>
+			<RepeatMode>1</RepeatMode>
+			<GameSpeed>1.25</GameSpeed>
+		</Item>
+		<Item>
+			<Level>Hard</Level>
+			<Buttons>6</Buttons>
+			<PointForStep>3</PointForStep>
+			<GameDuration>30</GameDuration>
+			<RepeatMode>0</RepeatMode>
+			<GameSpeed>1.5</GameSpeed>
+		</Item>
+	</MyArray>
+</ConfigXml>
