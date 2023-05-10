@@ -2,14 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.SocialPlatforms.Impl;
-using UnityEngine.UI;
+using System;
 
+[Serializable]
 public class LeadBoardObject
 {
     public int score;
     public string name;
 }
+
+[Serializable]
 public class LeadBoard
 {
     public List<LeadBoardObject> leadBoardEntryList;
@@ -19,70 +21,56 @@ public class LeadBoardController : MonoBehaviour
 {
     [SerializeField] public Transform entryContainer;
     [SerializeField] public Transform entryTemplate;
-    private List<LeadBoardObject> leadBoardEntryList;
     private List<Transform> leadBoardTransformList;
-
+    public LeadBoard leadBoard;
 
     private void Awake()
     {
+
         gameObject.SetActive(false);
+        entryTemplate.gameObject.SetActive(false);
 
         leadBoardTransformList = new List<Transform>();
+        loadLeadBoard();
+        AddScoreEntry(5555, "test11213");
+        drawLeadBoard();
 
-        leadBoardEntryList = new List<LeadBoardObject>()
-        {
-            new LeadBoardObject{ score = 2, name = "user3"},
-            new LeadBoardObject{ score = 4, name = "barak"},
-            new LeadBoardObject{ score = 6, name = "dor"},
-            new LeadBoardObject{ score = 8, name = "nadav"},
-            new LeadBoardObject{ score = 10, name = "ofek"},
-            new LeadBoardObject{ score = 12, name = "ella"},
-            new LeadBoardObject{ score = 14, name = "omri"},
-            new LeadBoardObject{ score = 10, name = "aliya"},
-            new LeadBoardObject{ score = 8, name = "user1"},
-            new LeadBoardObject{ score = 12, name = "user2"},
-        };
+    }
 
-        LeadBoard leadBoard = new LeadBoard { leadBoardEntryList = leadBoardEntryList };
-        saveLeadBoard(leadBoard);
-
-        LeadBoard leadboard1 = loadLeadBoard();
-
-
-
-        //string jsonString = PlayerPrefs.GetString("LeadBoardTable");
-        //LeadBoard leadBoard = JsonUtility.FromJson<LeadBoard>(jsonString);
-        //if (leadBoard == null) { 
-        //    leadBoard = new LeadBoard();
-        //}
-
-        ////AddScoreEntry(888, "Aviv");
-        //gameObject.SetActive(false);
-        //entryTemplate.gameObject.SetActive(false);
-
-
-
+    public void drawLeadBoard() {
+        deleteListFromSreen();
         //sort the list 
-        for (int i = 0; i < leadBoard.leadBoardEntryList.Count; i++) { 
-            for(int j = i+1; j < leadBoard.leadBoardEntryList.Count; j++) {
-                if (leadBoard.leadBoardEntryList[j].score > leadBoard.leadBoardEntryList[i].score) {
-                    //swap entries
-                    LeadBoardObject tmp = leadBoard.leadBoardEntryList[i];
-                    leadBoard.leadBoardEntryList[i] = leadBoard.leadBoardEntryList[j];
-                    leadBoard.leadBoardEntryList[j] = tmp;
-                }
-            }        
-        }
+        sortList();
 
-        foreach (LeadBoardObject leadBoardEntry in leadBoardEntryList) {
+        foreach (LeadBoardObject leadBoardEntry in this.leadBoard.leadBoardEntryList)
+        {
             createLeadBoardEntryTransform(leadBoardEntry, entryContainer, leadBoardTransformList);
         }
 
-        //LeadBoard leadBoard = new LeadBoard() { leadBoardEntryList = leadBoardEntryList };  
-        //string json = JsonUtility.ToJson(leadBoard);
-        //PlayerPrefs.SetString("LeadBoardTable", json);
-        //PlayerPrefs.Save();
-        
+    }
+
+    void deleteListFromSreen() {
+        for (int i = leadBoardTransformList.Count - 1; i >= 0; i--)
+        {
+            Destroy(leadBoardTransformList[i].gameObject);
+            leadBoardTransformList.RemoveAt(i);
+        }
+    }
+
+    public void sortList() {
+        for (int i = 0; i < this.leadBoard.leadBoardEntryList.Count; i++)
+        {
+            for (int j = i + 1; j < this.leadBoard.leadBoardEntryList.Count; j++)
+            {
+                if (this.leadBoard.leadBoardEntryList[j].score > leadBoard.leadBoardEntryList[i].score)
+                {
+                    //swap entries
+                    LeadBoardObject tmp = this.leadBoard.leadBoardEntryList[i];
+                    this.leadBoard.leadBoardEntryList[i] = this.leadBoard.leadBoardEntryList[j];
+                    this.leadBoard.leadBoardEntryList[j] = tmp;
+                }
+            }
+        }
     }
 
     private void createLeadBoardEntryTransform(LeadBoardObject leadBoardEntry, Transform container, List<Transform> transformList) {
@@ -115,23 +103,25 @@ public class LeadBoardController : MonoBehaviour
         LeadBoardObject leadBoardEntry = new LeadBoardObject { score = score, name = name };
 
         //load saved leadBoard scores
-        LeadBoard leadBoard = loadLeadBoard();
+        loadLeadBoard();
 
         //add new entry
-        leadBoard.leadBoardEntryList.Add(leadBoardEntry);
+        this.leadBoard.leadBoardEntryList.Add(leadBoardEntry);
 
         //save updated leadBoard
-        saveLeadBoard(leadBoard);
+        saveLeadBoard();
     }
 
-    public LeadBoard loadLeadBoard() {
+    public void loadLeadBoard() {
         string jsonString = PlayerPrefs.GetString("LeadBoardTable");
-        LeadBoard leadBoard = JsonUtility.FromJson<LeadBoard>(jsonString);
-        return leadBoard;
+        this.leadBoard = JsonUtility.FromJson<LeadBoard>(jsonString);
+        if (this.leadBoard.leadBoardEntryList == null) {
+            this.leadBoard.leadBoardEntryList= new List<LeadBoardObject>();
+        }
     }
-    public void saveLeadBoard(LeadBoard leadBoard)
+    public void saveLeadBoard()
     {
-        string json = JsonUtility.ToJson(leadBoard);
+        string json = JsonUtility.ToJson(this.leadBoard);
         PlayerPrefs.SetString("LeadBoardTable", json);
         PlayerPrefs.Save();
     }

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Unity.VisualScripting;
 using static ReadConfig;
 using TMPro;
+using System.Linq;
 
 public class GameController : MonoBehaviour
 {
@@ -46,10 +47,10 @@ public class GameController : MonoBehaviour
 
         //insert player name 
         //nameMenu.GetComponent<NameMenuController>().show();
-        //leadBoard.GetComponent<LeadBoardController>().show();
+        leadBoard.GetComponent<LeadBoardController>().show();
 
         // select game level 
-        levelSelection.GetComponent<LevelSelectionController>().show();
+        //levelSelection.GetComponent<LevelSelectionController>().show();
 
       
 
@@ -62,7 +63,8 @@ public class GameController : MonoBehaviour
         }
     }
 
-    void startGame() {
+    public void startGame() {
+        updateScore(0);
         gameUi.GetComponent<GameUiController>().restTimer(selectedConfig.GameDuration);
         isGameRunning = true;
         gameUi.GetComponent<GameUiController>().show();
@@ -76,12 +78,23 @@ public class GameController : MonoBehaviour
     IEnumerator playSequence(List<ButtonColorsEnum> sequence, float speed =0.2f)
     {
         yield return new WaitForSeconds(1f);
-        foreach (ButtonColorsEnum seq in sequence) {
-            yield return new WaitForSeconds(speed);
-
-            GameObject btn = buttonsDict[seq];
+        // repeat mode is off
+        if (!selectedConfig.RepeatMode)
+        {
+            GameObject btn = buttonsDict[sequence[sequence.Count - 1]];
             btn.GetComponent<ButtonController>().highlightState();
         }
+        else {
+            //repeat mode is on
+            foreach (ButtonColorsEnum seq in sequence)
+            {
+                yield return new WaitForSeconds(speed);
+
+                GameObject btn = buttonsDict[seq];
+                btn.GetComponent<ButtonController>().highlightState();
+            }
+        }
+    
     }
 
 
@@ -120,9 +133,9 @@ public class GameController : MonoBehaviour
 
     public void gameOver() {
         gameUi.GetComponent<GameUiController>().showGameOver();
-        isGameRunning = false;
-        FindObjectOfType<AudioManager>().PlaySound(SoundManagerEnum.gameOver);
         updateScore(0);
+        isGameRunning = false;
+        gameUi.GetComponent<GameUiController>().isGameRunning = false;
 
     }
 
@@ -139,7 +152,13 @@ public class GameController : MonoBehaviour
     }
 
     public void updateScore(int amount) {
-        score += amount;
+        if (amount == 0)
+        {
+            score = 0;
+        }
+        else {
+            score += amount;
+        }
         gameUi.GetComponent<GameUiController>().updateScore(score);
     }
 

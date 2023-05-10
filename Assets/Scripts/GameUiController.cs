@@ -7,19 +7,23 @@ public class GameUiController : MonoBehaviour
 {
     [SerializeField] public GameObject gameController;
     [SerializeField] public  GameObject gameOver;
+    [SerializeField] public GameObject playAgain;
     [SerializeField] public TextMeshProUGUI timer;
     [SerializeField] public TextMeshProUGUI scoreTextMesh;
 
     float currentTime = 0f;
+    public bool isGameRunning = false;
     private void Awake()
     {
         gameObject.SetActive(false);
         gameOver.SetActive(false);
+        playAgain.SetActive(false);
 
     }
 
     public void show()
     {
+        isGameRunning = true;
         gameObject.SetActive(true);
     }
 
@@ -30,12 +34,21 @@ public class GameUiController : MonoBehaviour
 
     public void hideGameOver() {
         gameOver.SetActive(false);
+        playAgain.SetActive(false);
+
     }
 
     public void showGameOver() {
+        FindObjectOfType<AudioManager>().PlaySound(SoundManagerEnum.gameOver);
         gameOver.SetActive(true);
+        playAgain.SetActive(true);
     }
 
+    public void onPlayAgain() {
+        hideGameOver();
+        gameController.GetComponent<GameController>().startGame();
+
+    }
     // Start is called before the first frame update
     void Start()
     {
@@ -53,12 +66,17 @@ public class GameUiController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        currentTime -= Time.deltaTime;
-        timer.text = currentTime.ToString("0");
-        if (currentTime <= 0) { 
-            currentTime= 0;
-            gameController.GetComponent<GameController>().gameOver();
+        if (isGameRunning) {
+            currentTime -= Time.deltaTime;
+            timer.text = currentTime.ToString("0");
+            if (currentTime <= 0)
+            {
+                currentTime = 0;
+                gameController.GetComponent<GameController>().gameOver();
+                isGameRunning = false;
+            }
         }
+        
 
     }
 }
