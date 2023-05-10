@@ -49,11 +49,6 @@ public class GameUiController : MonoBehaviour
         gameController.GetComponent<GameController>().startGame();
 
     }
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
     public void restTimer(float time) { 
         currentTime = time;
@@ -63,12 +58,14 @@ public class GameUiController : MonoBehaviour
     {
         scoreTextMesh.text = score.ToString(); 
     }
-    // Update is called once per frame
     void Update()
     {
+        //update the game CountDown clock
         if (isGameRunning) {
             currentTime -= Time.deltaTime;
+            //display only seconds
             timer.text = currentTime.ToString("0");
+            //if current time = 0 the game is over 
             if (currentTime <= 0)
             {
                 currentTime = 0;

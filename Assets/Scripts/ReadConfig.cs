@@ -11,17 +11,6 @@ public class ReadConfig : MonoBehaviour
     public string xmlFilePath;
 
     [System.Serializable]
-    public class Config
-    {
-        public string Level;
-        public int Buttons;
-        public int PointForStep;
-        public int GameDuration;
-        public bool RepeatMode;
-        public int GameSpeed;
-    }
-
-    [System.Serializable]
     public class ConfigList
     {
         public Config[] config;

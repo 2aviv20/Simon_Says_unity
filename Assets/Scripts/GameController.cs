@@ -7,6 +7,7 @@ using Unity.VisualScripting;
 using static ReadConfig;
 using TMPro;
 using System.Linq;
+using UnityEngine.SocialPlatforms.Impl;
 
 public class GameController : MonoBehaviour
 {
@@ -16,13 +17,16 @@ public class GameController : MonoBehaviour
     public int score = 0;
     private string playerName;
     private bool isGameRunning = false;
+    private Dictionary<ButtonColorsEnum,GameObject> simonButtonsDict = new Dictionary<ButtonColorsEnum, GameObject>();
 
-    [SerializeField] public GameObject[] simonButtons;
     [SerializeField] public GameObject nameMenu;
     [SerializeField] public GameObject gameUi;
     [SerializeField] public GameObject levelSelection;
     [SerializeField] public GameObject leadBoard;
     [SerializeField] public GameObject configController;
+    [SerializeField] public GameObject drawButtonsController;
+
+
 
 
     private List<ButtonColorsEnum> startDemoSequence = new List<ButtonColorsEnum> {
@@ -38,7 +42,6 @@ public class GameController : MonoBehaviour
     private List<ButtonColorsEnum> gameSequence = new List<ButtonColorsEnum>();
     private List<ButtonColorsEnum> playerInputSequence = new List<ButtonColorsEnum>();
 
-    Dictionary<ButtonColorsEnum, GameObject> buttonsDict = new Dictionary<ButtonColorsEnum, GameObject>();
     // Start is called before the first frame update
     void Start()
     {
@@ -47,20 +50,11 @@ public class GameController : MonoBehaviour
 
         //insert player name 
         //nameMenu.GetComponent<NameMenuController>().show();
-        leadBoard.GetComponent<LeadBoardController>().show();
+        //leadBoard.GetComponent<LeadBoardController>().show();
 
         // select game level 
-        //levelSelection.GetComponent<LevelSelectionController>().show();
+        levelSelection.GetComponent<LevelSelectionController>().show();
 
-      
-
-
-
-        //start to play 
-        foreach (GameObject btn in simonButtons)
-        {
-            buttonsDict.Add(btn.GetComponent<ButtonController>().colorName, btn);
-        }
     }
 
     public void startGame() {
@@ -81,7 +75,7 @@ public class GameController : MonoBehaviour
         // repeat mode is off
         if (!selectedConfig.RepeatMode)
         {
-            GameObject btn = buttonsDict[sequence[sequence.Count - 1]];
+            GameObject btn = this.simonButtonsDict[sequence[sequence.Count - 1]];
             btn.GetComponent<ButtonController>().highlightState();
         }
         else {
@@ -90,7 +84,7 @@ public class GameController : MonoBehaviour
             {
                 yield return new WaitForSeconds(speed);
 
-                GameObject btn = buttonsDict[seq];
+                GameObject btn = this.simonButtonsDict[seq];
                 btn.GetComponent<ButtonController>().highlightState();
             }
         }
@@ -99,7 +93,7 @@ public class GameController : MonoBehaviour
 
 
     void nextSequence() {
-        int randomNumber = Random.Range(1, 7);
+        int randomNumber = Random.Range(1, selectedConfig.Buttons + 1);
         gameSequence.Add((ButtonColorsEnum)randomNumber);
         playerInputSequence.Clear();
     }
@@ -133,6 +127,7 @@ public class GameController : MonoBehaviour
 
     public void gameOver() {
         gameUi.GetComponent<GameUiController>().showGameOver();
+        leadBoard.GetComponent<LeadBoardController>().AddScoreEntry(score, playerName);
         updateScore(0);
         isGameRunning = false;
         gameUi.GetComponent<GameUiController>().isGameRunning = false;
@@ -145,8 +140,8 @@ public class GameController : MonoBehaviour
                 selectedConfig = c;
             }
         }
-        Debug.Log(selectedConfig.Level + selectedConfig.PointForStep.ToString() + selectedConfig.RepeatMode.ToString());
         levelSelection.GetComponent<LevelSelectionController>().hide();
+        drawButtonsController.GetComponent<DrawButtons>().drawButtons(selectedConfig);
         nameMenu.GetComponent<NameMenuController>().show();
 
     }
@@ -164,14 +159,11 @@ public class GameController : MonoBehaviour
 
     public void setPlayerName(string playerName) {
         this.playerName = playerName;
-        Debug.Log(this.playerName);
         startGame();
     }
-    // Update is called once per frame
-    void Update()
-    {
 
-
+    public void addButtonToList(ButtonColorsEnum buttonColor, GameObject button) { 
+        this.simonButtonsDict.Add(buttonColor, button);
     }
 }
 

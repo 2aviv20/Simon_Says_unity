@@ -1,13 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class ButtonController : MonoBehaviour
 {
 
-    [SerializeField] public Material normal, highlight;
-    [SerializeField] public ButtonColorsEnum colorName = ButtonColorsEnum.blue;
+    public Material normal, highlight;
+    public ButtonColorsEnum colorName;
 
     bool ishighlight;
 
@@ -15,18 +16,22 @@ public class ButtonController : MonoBehaviour
     {
         this.GetComponent<Renderer>().material = normal;
         ishighlight = false;
+    }
 
+    public void setButtonColor(ButtonColorsEnum colorName, Material normal, Material highlight) {
+                this.normal = normal;
+                this.highlight = highlight;
+                this.colorName= colorName;
+                this.GetComponent<Renderer>().material = normal;
     }
     void OnMouseOver()
     {
-        //If your mouse hovers over the GameObject with the script attached, output this message
-        //Debug.Log("Mouse is over GameObject.  " + transform.tag);
+
     }
 
     void OnMouseExit()
     {
-        //The mouse is no longer hovering over the GameObject so output this message each frame
-        //Debug.Log("Mouse is no longer on GameObject. " + transform.tag);
+
     }
 
     private void OnMouseDown()

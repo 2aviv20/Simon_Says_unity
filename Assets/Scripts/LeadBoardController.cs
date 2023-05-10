@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using System;
+using Unity.VisualScripting;
 
 [Serializable]
 public class LeadBoardObject
@@ -26,21 +27,22 @@ public class LeadBoardController : MonoBehaviour
 
     private void Awake()
     {
-
         gameObject.SetActive(false);
         entryTemplate.gameObject.SetActive(false);
-
         leadBoardTransformList = new List<Transform>();
-        loadLeadBoard();
-        AddScoreEntry(5555, "test11213");
         drawLeadBoard();
-
     }
 
     public void drawLeadBoard() {
+        loadLeadBoard();
         deleteListFromSreen();
         //sort the list 
         sortList();
+        //remove items from list , max 10 items
+        for (int i = this.leadBoard.leadBoardEntryList.Count - 1; i >= 10; i--)
+        {
+            this.leadBoard.leadBoardEntryList.RemoveAt(i);
+        }
 
         foreach (LeadBoardObject leadBoardEntry in this.leadBoard.leadBoardEntryList)
         {
@@ -97,7 +99,7 @@ public class LeadBoardController : MonoBehaviour
         transformList.Add(entryTransform);
     }
 
-    private void AddScoreEntry(int score, string name)
+    public void AddScoreEntry(int score, string name)
     {
         //create entry
         LeadBoardObject leadBoardEntry = new LeadBoardObject { score = score, name = name };
@@ -106,7 +108,7 @@ public class LeadBoardController : MonoBehaviour
         loadLeadBoard();
 
         //add new entry
-        this.leadBoard.leadBoardEntryList.Add(leadBoardEntry);
+        this.leadBoard.leadBoardEntryList.Add(leadBoardEntry);        
 
         //save updated leadBoard
         saveLeadBoard();
@@ -114,9 +116,13 @@ public class LeadBoardController : MonoBehaviour
 
     public void loadLeadBoard() {
         string jsonString = PlayerPrefs.GetString("LeadBoardTable");
-        this.leadBoard = JsonUtility.FromJson<LeadBoard>(jsonString);
+        
+        LeadBoard loadedData = JsonUtility.FromJson<LeadBoard>(jsonString);
         if (this.leadBoard.leadBoardEntryList == null) {
             this.leadBoard.leadBoardEntryList= new List<LeadBoardObject>();
+        }
+        if (loadedData != null) {
+            this.leadBoard = loadedData;
         }
     }
     public void saveLeadBoard()

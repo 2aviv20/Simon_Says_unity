@@ -2,7 +2,7 @@
   "config" :[
     {
       "Level": "Easy",
-      "Buttons": 4,
+      "Buttons": 2,
       "PointForStep": 1,
       "GameDuration": 50,
       "RepeatMode": "True",
@@ -10,7 +10,7 @@
     },
     {
       "Level": "Medium",
-      "Buttons": 5,
+      "Buttons": 4,
       "PointForStep": 2,
       "GameDuration": 45,
       "RepeatMode": "True",
