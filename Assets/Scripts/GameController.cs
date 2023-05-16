@@ -1,14 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using System.Threading.Tasks;
-using Unity.VisualScripting;
-using static ReadConfig;
-using TMPro;
-using System.Linq;
-using UnityEngine.SocialPlatforms.Impl;
-using UnityEditor.Search;
+
 
 public class GameController : MonoBehaviour
 {
@@ -16,9 +9,9 @@ public class GameController : MonoBehaviour
     public Config[] configArray;
     public Config selectedConfig;
     public int score = 0;
-    private string playerName;
+    public string playerName;
     private bool isGameRunning = false;
-    private Dictionary<ButtonColorsEnum,GameObject> simonButtonsDict = new Dictionary<ButtonColorsEnum, GameObject>();
+    private Dictionary<ButtonColorsEnum, GameObject> simonButtonsDict = new Dictionary<ButtonColorsEnum, GameObject>();
 
     [SerializeField] public GameObject nameMenu;
     [SerializeField] public GameObject gameUi;
@@ -71,21 +64,28 @@ public class GameController : MonoBehaviour
 
     }
 
-    public void startGame() {
+    public void startGame()
+    {
+        //reset the sequence lists 
+        playerInputSequence.Clear();
+        gameSequence.Clear();
+        //reset score 
         updateScore(0);
+        //reset timer 
         gameUi.GetComponent<GameUiController>().restTimer(selectedConfig.GameDuration);
         isGameRunning = true;
         gameUi.GetComponent<GameUiController>().show();
+        //hide game over title
         gameOverUi.GetComponent<GameOverController>().hide();
 
         gameLoop();
     }
-    void gameLoop() {
+    void gameLoop()
+    {
         nextSequence();
-        //StartCoroutine(playSequence(startDemoSequence));
-        StartCoroutine(playSequence(gameSequence, 0.5f/selectedConfig.GameSpeed));
+        StartCoroutine(playSequence(gameSequence, 0.5f / selectedConfig.GameSpeed));
     }
-    IEnumerator playSequence(List<ButtonColorsEnum> sequence, float speed =0.2f)
+    IEnumerator playSequence(List<ButtonColorsEnum> sequence, float speed = 0.2f)
     {
         yield return new WaitForSeconds(1f);
         // repeat mode is off
@@ -94,7 +94,8 @@ public class GameController : MonoBehaviour
             GameObject btn = this.simonButtonsDict[sequence[sequence.Count - 1]];
             btn.GetComponent<ButtonController>().highlightState();
         }
-        else {
+        else
+        {
             //repeat mode is on
             foreach (ButtonColorsEnum seq in sequence)
             {
@@ -104,55 +105,50 @@ public class GameController : MonoBehaviour
                 btn.GetComponent<ButtonController>().highlightState();
             }
         }
-    
+
     }
 
 
-    void nextSequence() {
+    void nextSequence()
+    {
         int randomNumber = Random.Range(1, selectedConfig.Buttons + 1);
         gameSequence.Add((ButtonColorsEnum)randomNumber);
         playerInputSequence.Clear();
     }
 
     //Invoked from ButtonController.cs OnMouseDown()
-    public void onButtonPressed(ButtonColorsEnum color) {
+    public void onButtonPressed(ButtonColorsEnum color)
+    {
         if (!isGameRunning) { return; }
         playerInputSequence.Add(color);
-        if (playerInputSequence.Count == gameSequence.Count) {
-            bool keepPlaying = compareSequence(gameSequence, playerInputSequence);
-            if (keepPlaying)
-            {
-                updateScore(selectedConfig.PointForStep);
-                gameLoop();
-            }
-            else {
-                gameOver();
-            }
-
+        
+        //check if last player input equal the game Sequence at the same position 
+        if (playerInputSequence[playerInputSequence.Count - 1] != gameSequence[playerInputSequence.Count - 1]) {
+            gameOver();
+        }
+        //if its the last user input in sequence , move to next sequence 
+        if (playerInputSequence.Count == gameSequence.Count)
+        {
+            updateScore(selectedConfig.PointForStep);
+            gameLoop();
         }
     }
 
-    bool compareSequence(List<ButtonColorsEnum> gameSequence, List<ButtonColorsEnum> playerInputSequence) {
-        for (int i = 0; i < gameSequence.Count; i++) {
-            if (gameSequence[i] != playerInputSequence[i]) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public void gameOver() {
+    public void gameOver()
+    {
         gameOverUi.GetComponent<GameOverController>().show();
         leadBoard.GetComponent<LeadBoardController>().AddScoreEntry(score, playerName);
         isGameRunning = false;
         gameUi.GetComponent<GameUiController>().isGameRunning = false;
-
-
+        gameUi.GetComponent<GameUiController>().restTimer(0);
     }
 
-    public void onLevelSelected(string levelName) {
-        foreach (Config c in configArray) {
-            if (c.Level == levelName) {
+    public void onLevelSelected(string levelName)
+    {
+        foreach (Config c in configArray)
+        {
+            if (c.Level == levelName)
+            {
                 selectedConfig = c;
             }
         }
@@ -162,23 +158,27 @@ public class GameController : MonoBehaviour
 
     }
 
-    public void updateScore(int amount) {
+    public void updateScore(int amount)
+    {
         if (amount == 0)
         {
             score = 0;
         }
-        else {
+        else
+        {
             score += amount;
         }
         gameUi.GetComponent<GameUiController>().updateScore(score);
     }
 
-    public void setPlayerName(string playerName) {
+    public void setPlayerName(string playerName)
+    {
         this.playerName = playerName;
         startGame();
     }
 
-    public void addButtonToList(ButtonColorsEnum buttonColor, GameObject button) { 
+    public void addButtonToList(ButtonColorsEnum buttonColor, GameObject button)
+    {
         this.simonButtonsDict.Add(buttonColor, button);
     }
 }

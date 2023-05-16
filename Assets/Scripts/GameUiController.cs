@@ -35,6 +35,7 @@ public class GameUiController : MonoBehaviour
     public void restTimer(float time)
     {
         currentTime = time;
+        timer.text = currentTime.ToString("0");
     }
 
     public void updateScore(int score)

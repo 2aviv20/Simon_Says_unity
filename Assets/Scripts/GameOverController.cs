@@ -20,12 +20,13 @@ public class GameOverController : MonoBehaviour
         FindObjectOfType<AudioManager>().PlaySound(SoundManagerEnum.gameOver);
         gameObject.SetActive(true);
         Debug.Log("show game over");
+        Invoke("hide", 2f);
     }
 
 
     public void onPlayAgain()
     {
-        hide(); ;
+        hide();
         gameController.GetComponent<GameController>().startGame();
 
     }

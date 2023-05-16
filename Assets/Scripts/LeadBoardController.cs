@@ -20,6 +20,7 @@ public class LeadBoard
 
 public class LeadBoardController : MonoBehaviour
 {
+    [SerializeField] public Transform gameContoller;
     [SerializeField] public Transform entryContainer;
     [SerializeField] public Transform entryTemplate;
     private List<Transform> leadBoardTransformList;
@@ -76,7 +77,7 @@ public class LeadBoardController : MonoBehaviour
     }
 
     private void createLeadBoardEntryTransform(LeadBoardObject leadBoardEntry, Transform container, List<Transform> transformList) {
-        float templateHeight = 20f;
+        float templateHeight = 40f;
         Transform entryTransform = Instantiate(entryTemplate, container);
         RectTransform entryRectTransform = entryTransform.GetComponent<RectTransform>();
         entryRectTransform.anchoredPosition = new Vector2(0, -templateHeight * transformList.Count);
@@ -96,6 +97,12 @@ public class LeadBoardController : MonoBehaviour
         entryTransform.Find("ScoreText").GetComponent<TextMeshProUGUI>().text = leadBoardEntry.score.ToString();
         entryTransform.Find("NameText").GetComponent<TextMeshProUGUI>().text = leadBoardEntry.name;
 
+        if (leadBoardEntry.name == gameContoller.GetComponent<GameController>().playerName)
+        {
+            entryTransform.Find("PosText").GetComponent<TextMeshProUGUI>().color = Color.red;
+            entryTransform.Find("ScoreText").GetComponent<TextMeshProUGUI>().color = Color.red;
+            entryTransform.Find("NameText").GetComponent<TextMeshProUGUI>().color = Color.red;
+        }
         transformList.Add(entryTransform);
     }
 
@@ -107,8 +114,19 @@ public class LeadBoardController : MonoBehaviour
         //load saved leadBoard scores
         loadLeadBoard();
 
+        bool duplicatedNameFound = false;
         //add new entry
-        this.leadBoard.leadBoardEntryList.Add(leadBoardEntry);        
+
+        //perevent duplicated names in leadBoard
+        foreach (LeadBoardObject item in this.leadBoard.leadBoardEntryList) {
+            if (item.name == name) { 
+                item.score = score;
+                duplicatedNameFound = true;
+            }
+        }
+        if (!duplicatedNameFound) {
+            this.leadBoard.leadBoardEntryList.Add(leadBoardEntry);
+        }
 
         //save updated leadBoard
         saveLeadBoard();
@@ -131,8 +149,16 @@ public class LeadBoardController : MonoBehaviour
         PlayerPrefs.SetString("LeadBoardTable", json);
         PlayerPrefs.Save();
     }
+
+    public void resetLeadBoard()
+    {
+        PlayerPrefs.SetString("LeadBoardTable", "{}");
+        PlayerPrefs.Save();
+    }
+
     public void show()
     {
+        drawLeadBoard();
         gameObject.SetActive(true);
     }
 

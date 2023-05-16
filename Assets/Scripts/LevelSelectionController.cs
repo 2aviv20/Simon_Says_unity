@@ -14,6 +14,7 @@ public class LevelSelectionController : MonoBehaviour
     [SerializeField] public Transform entryTemplate;
     private void Awake()
     {
+        entryTemplate.gameObject.SetActive(false);
         gameObject.SetActive(false);
         transformList = new List<Transform>();
 

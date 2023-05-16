@@ -21,6 +21,7 @@ public class DrawButtons : MonoBehaviour
     {
         transformList = new List<Transform>();
         buttonMaterials = Resources.LoadAll<Material>("ButtonMaterials");
+        template.gameObject.SetActive(false);
     }
 
     public void drawButtons(Config selectedConfig)
@@ -34,7 +35,7 @@ public class DrawButtons : MonoBehaviour
             Material highlight = getMaterial(buttonColor.ToString() + "_highlight");
             Transform entryTransform = Instantiate(template, container.transform);
             RectTransform entryRectTransform = entryTransform.GetComponent<RectTransform>();
-            entryRectTransform.RotateAround(container.GetComponent<Renderer>().bounds.center, Vector3.up, yAngleRotation * i);
+            entryRectTransform.RotateAround(container.GetComponent<Renderer>().bounds.center, new Vector3(0,0,1), yAngleRotation * i);
             entryRectTransform.GetComponent<ButtonController>().setButtonColor(buttonColor, normal, highlight);
             entryTransform.gameObject.SetActive(true);
             transformList.Add(entryTransform);
