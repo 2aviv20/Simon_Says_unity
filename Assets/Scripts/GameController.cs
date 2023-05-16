@@ -8,6 +8,7 @@ using static ReadConfig;
 using TMPro;
 using System.Linq;
 using UnityEngine.SocialPlatforms.Impl;
+using UnityEditor.Search;
 
 public class GameController : MonoBehaviour
 {
@@ -21,6 +22,7 @@ public class GameController : MonoBehaviour
 
     [SerializeField] public GameObject nameMenu;
     [SerializeField] public GameObject gameUi;
+    [SerializeField] public GameObject gameOverUi;
     [SerializeField] public GameObject levelSelection;
     [SerializeField] public GameObject leadBoard;
     [SerializeField] public GameObject configController;
@@ -45,15 +47,27 @@ public class GameController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+
+        //1.press on StartGame 
+
+        //2.insert player name 
+        //nameMenu.GetComponent<NameMenuController>().show();
+
+        //3.select game level
         //read config file 
         this.configArray = configController.GetComponent<ReadConfig>().loadGameConfig();
-
-        //insert player name 
-        //nameMenu.GetComponent<NameMenuController>().show();
+        levelSelection.GetComponent<LevelSelectionController>().show();
+        //show lead board 
         //leadBoard.GetComponent<LeadBoardController>().show();
 
-        // select game level 
-        levelSelection.GetComponent<LevelSelectionController>().show();
+
+        //open settings menu
+        //
+
+        //show game ui 
+        //gameUi.GetComponent<GameUiController>().show();
+
+
 
     }
 
@@ -62,6 +76,8 @@ public class GameController : MonoBehaviour
         gameUi.GetComponent<GameUiController>().restTimer(selectedConfig.GameDuration);
         isGameRunning = true;
         gameUi.GetComponent<GameUiController>().show();
+        gameOverUi.GetComponent<GameOverController>().hide();
+
         gameLoop();
     }
     void gameLoop() {
@@ -126,11 +142,11 @@ public class GameController : MonoBehaviour
     }
 
     public void gameOver() {
-        gameUi.GetComponent<GameUiController>().showGameOver();
+        gameOverUi.GetComponent<GameOverController>().show();
         leadBoard.GetComponent<LeadBoardController>().AddScoreEntry(score, playerName);
-        updateScore(0);
         isGameRunning = false;
         gameUi.GetComponent<GameUiController>().isGameRunning = false;
+
 
     }
 

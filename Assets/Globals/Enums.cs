@@ -20,4 +20,5 @@ public enum SoundManagerEnum
     pink = 6,
     menuButtonCick=7,
     gameOver=8,
+    keyPressed = 9,
 }

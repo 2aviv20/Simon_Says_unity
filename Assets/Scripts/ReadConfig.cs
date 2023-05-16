@@ -22,7 +22,7 @@ public class ReadConfig : MonoBehaviour
     {
         [XmlArray("MyArray")]
         [XmlArrayItem("Item")]
-        public List<Config> config = new List<Config>();
+        public Config[] config;
 
     }
     public Config[] loadGameConfig() {
@@ -57,23 +57,12 @@ public class ReadConfig : MonoBehaviour
             StreamReader reader = new StreamReader(path);
             ConfigXml data = (ConfigXml)serializer.Deserialize(reader);
             reader.Close();
-
-            // Access the array data
-            foreach (Config item in data.config)
-            {
-                Debug.Log(item);
-            }
+            return data.config;
         }
         else
         {
             Debug.Log("File does not exist.");
         }
-        //string xmlString = File.ReadAllText(Application.dataPath + xmlFilePath);
-        //XmlSerializer serializer = new XmlSerializer(typeof(ConfigList));
-        //StreamReader reader = new StreamReader(Application.dataPath + xmlFilePath);
-        //ConfigList gameConfig = (ConfigList)serializer.Deserialize(reader.BaseStream);
-        //reader.Close();
-        //return gameConfig.config;
         return null;
     }
 }

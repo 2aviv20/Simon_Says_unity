@@ -6,7 +6,7 @@ using UnityEngine;
 public class GameUiController : MonoBehaviour
 {
     [SerializeField] public GameObject gameController;
-    [SerializeField] public  GameObject gameOver;
+    [SerializeField] public GameObject gameOver;
     [SerializeField] public GameObject playAgain;
     [SerializeField] public TextMeshProUGUI timer;
     [SerializeField] public TextMeshProUGUI scoreTextMesh;
@@ -32,36 +32,20 @@ public class GameUiController : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    public void hideGameOver() {
-        gameOver.SetActive(false);
-        playAgain.SetActive(false);
-
-    }
-
-    public void showGameOver() {
-        FindObjectOfType<AudioManager>().PlaySound(SoundManagerEnum.gameOver);
-        gameOver.SetActive(true);
-        playAgain.SetActive(true);
-    }
-
-    public void onPlayAgain() {
-        hideGameOver();
-        gameController.GetComponent<GameController>().startGame();
-
-    }
-
-    public void restTimer(float time) { 
+    public void restTimer(float time)
+    {
         currentTime = time;
     }
 
     public void updateScore(int score)
     {
-        scoreTextMesh.text = score.ToString(); 
+        scoreTextMesh.text = score.ToString();
     }
     void Update()
     {
         //update the game CountDown clock
-        if (isGameRunning) {
+        if (isGameRunning)
+        {
             currentTime -= Time.deltaTime;
             //display only seconds
             timer.text = currentTime.ToString("0");
@@ -73,7 +57,7 @@ public class GameUiController : MonoBehaviour
                 isGameRunning = false;
             }
         }
-        
+
 
     }
 }

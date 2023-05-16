@@ -21,7 +21,12 @@ public class NameMenuController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
+        if (Input.anyKeyDown)
+        {
+            FindObjectOfType<AudioManager>().PlaySound(SoundManagerEnum.keyPressed);
+        }
+
     }
 
     public void show()
