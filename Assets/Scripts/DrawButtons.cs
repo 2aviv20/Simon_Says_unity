@@ -44,7 +44,7 @@ public class DrawButtons : MonoBehaviour
             gameController.GetComponent<GameController>().addButtonToList(buttonColor,entryTransform.gameObject);
         }
     }
-    void deleteButtonsFromSreen()
+    public void deleteButtonsFromSreen()
     {
         for (int i = transformList.Count - 1; i >= 0; i--)
         {

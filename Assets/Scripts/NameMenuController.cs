@@ -22,7 +22,7 @@ public class NameMenuController : MonoBehaviour
     void Update()
     {
 
-        if (Input.anyKeyDown)
+        if (Input.anyKeyDown && !Input.GetMouseButtonDown(0))
         {
             FindObjectOfType<AudioManager>().PlaySound(SoundManagerEnum.keyPressed);
         }

@@ -17,7 +17,7 @@ public class GameUiController : MonoBehaviour
     {
         gameObject.SetActive(false);
         gameOver.SetActive(false);
-        playAgain.SetActive(false);
+        //playAgain.SetActive(false);
 
     }
 

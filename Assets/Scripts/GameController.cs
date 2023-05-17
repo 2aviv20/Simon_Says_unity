@@ -13,55 +13,25 @@ public class GameController : MonoBehaviour
     private bool isGameRunning = false;
     private Dictionary<ButtonColorsEnum, GameObject> simonButtonsDict = new Dictionary<ButtonColorsEnum, GameObject>();
 
+    [SerializeField] public GameObject playButton;
     [SerializeField] public GameObject nameMenu;
     [SerializeField] public GameObject gameUi;
-    [SerializeField] public GameObject gameOverUi;
     [SerializeField] public GameObject levelSelection;
+    [SerializeField] public GameObject gameOverUi;
     [SerializeField] public GameObject leadBoard;
     [SerializeField] public GameObject configController;
     [SerializeField] public GameObject drawButtonsController;
 
-
-
-
-    private List<ButtonColorsEnum> startDemoSequence = new List<ButtonColorsEnum> {
-        ButtonColorsEnum.red,
-        ButtonColorsEnum.green,
-        ButtonColorsEnum.yellow,
-        ButtonColorsEnum.blue ,
-        ButtonColorsEnum.red,
-        ButtonColorsEnum.green,
-        ButtonColorsEnum.yellow,
-        ButtonColorsEnum.blue
-    };
     private List<ButtonColorsEnum> gameSequence = new List<ButtonColorsEnum>();
     private List<ButtonColorsEnum> playerInputSequence = new List<ButtonColorsEnum>();
 
     // Start is called before the first frame update
     void Start()
     {
-
-        //1.press on StartGame 
-
-        //2.insert player name 
-        //nameMenu.GetComponent<NameMenuController>().show();
-
-        //3.select game level
         //read config file 
         this.configArray = configController.GetComponent<ReadConfig>().loadGameConfig();
-        levelSelection.GetComponent<LevelSelectionController>().show();
-        //show lead board 
-        //leadBoard.GetComponent<LeadBoardController>().show();
-
-
-        //open settings menu
-        //
-
-        //show game ui 
-        //gameUi.GetComponent<GameUiController>().show();
-
-
-
+        //play intro demo 
+        playIntroDemo();
     }
 
     public void startGame()
@@ -121,10 +91,12 @@ public class GameController : MonoBehaviour
     {
         if (!isGameRunning) { return; }
         playerInputSequence.Add(color);
-        
+
         //check if last player input equal the game Sequence at the same position 
-        if (playerInputSequence[playerInputSequence.Count - 1] != gameSequence[playerInputSequence.Count - 1]) {
+        if (playerInputSequence[playerInputSequence.Count - 1] != gameSequence[playerInputSequence.Count - 1])
+        {
             gameOver();
+            return;
         }
         //if its the last user input in sequence , move to next sequence 
         if (playerInputSequence.Count == gameSequence.Count)
@@ -154,8 +126,7 @@ public class GameController : MonoBehaviour
         }
         levelSelection.GetComponent<LevelSelectionController>().hide();
         drawButtonsController.GetComponent<DrawButtons>().drawButtons(selectedConfig);
-        nameMenu.GetComponent<NameMenuController>().show();
-
+        startGame();
     }
 
     public void updateScore(int amount)
@@ -174,12 +145,42 @@ public class GameController : MonoBehaviour
     public void setPlayerName(string playerName)
     {
         this.playerName = playerName;
-        startGame();
+        levelSelection.GetComponent<LevelSelectionController>().show();
     }
 
     public void addButtonToList(ButtonColorsEnum buttonColor, GameObject button)
     {
         this.simonButtonsDict.Add(buttonColor, button);
+    }
+
+    public void hidePlayButton()
+    {
+        playButton.SetActive(false);
+        drawButtonsController.GetComponent<DrawButtons>().deleteButtonsFromSreen();
+        this.simonButtonsDict.Clear();
+
+    }
+
+    public void playIntroDemo()
+    {
+        Config demoConfig = new Config { Level = "demo", Buttons = 6, PointForStep = 0, GameDuration = 0, RepeatMode = true, GameSpeed = 0 };
+        List<ButtonColorsEnum> introDemoSequence = new List<ButtonColorsEnum> {
+            ButtonColorsEnum.red,
+            ButtonColorsEnum.green,
+            ButtonColorsEnum.yellow,
+            ButtonColorsEnum.blue ,
+            ButtonColorsEnum.orange,
+            ButtonColorsEnum.pink,
+            ButtonColorsEnum.red,
+            ButtonColorsEnum.green,
+            ButtonColorsEnum.yellow,
+            ButtonColorsEnum.blue,
+            ButtonColorsEnum.orange,
+            ButtonColorsEnum.pink,
+        };
+        this.selectedConfig = demoConfig;
+        drawButtonsController.GetComponent<DrawButtons>().drawButtons(demoConfig);
+        StartCoroutine(playSequence(introDemoSequence, 0.3f));
     }
 }
 

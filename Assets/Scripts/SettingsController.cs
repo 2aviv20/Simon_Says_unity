@@ -12,6 +12,11 @@ public class SettingsController : MonoBehaviour
     [SerializeField] public GameObject configDropDown;
     [SerializeField] public GameObject gameConfig;
 
+    public void Awake()
+    {
+        gameObject.SetActive(false);
+    }
+
     public void show()
     {
         gameObject.SetActive(true);

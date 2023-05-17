@@ -1,25 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class GameOverController : MonoBehaviour
 {
     [SerializeField] public GameObject gameController;
     [SerializeField] public GameObject gameOverTitle;
-    [SerializeField] public GameObject playAgainButton;
 
     public void hide()
     {
         gameObject.SetActive(false);
-        gameOverTitle.SetActive(true);
-        playAgainButton.SetActive(true);
     }
 
     public void show()
     {
         FindObjectOfType<AudioManager>().PlaySound(SoundManagerEnum.gameOver);
+        gameOverTitle.SetActive(true);
         gameObject.SetActive(true);
-        Debug.Log("show game over");
         Invoke("hide", 2f);
     }
 
@@ -30,16 +28,11 @@ public class GameOverController : MonoBehaviour
         gameController.GetComponent<GameController>().startGame();
 
     }
+
     // Start is called before the first frame update
     void Start()
     {
         gameObject.SetActive(false);
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        gameOverTitle.SetActive(false);
     }
 }
