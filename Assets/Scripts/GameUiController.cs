@@ -8,6 +8,7 @@ public class GameUiController : MonoBehaviour
     [SerializeField] public GameObject gameController;
     [SerializeField] public GameObject gameOver;
     [SerializeField] public GameObject playAgain;
+    [SerializeField] public GameObject repeatModeTitle;
     [SerializeField] public TextMeshProUGUI timer;
     [SerializeField] public TextMeshProUGUI scoreTextMesh;
 
@@ -17,8 +18,7 @@ public class GameUiController : MonoBehaviour
     {
         gameObject.SetActive(false);
         gameOver.SetActive(false);
-        //playAgain.SetActive(false);
-
+        repeatModeTitle.SetActive(false);
     }
 
     public void show()
@@ -54,11 +54,18 @@ public class GameUiController : MonoBehaviour
             if (currentTime <= 0)
             {
                 currentTime = 0;
-                gameController.GetComponent<GameController>().gameOver();
+                gameController.GetComponent<GameController>().gameOver(true);
                 isGameRunning = false;
             }
         }
+    }
 
+    public void showRepeatMode() {
+        repeatModeTitle.SetActive(true);
+    }
 
+    public void hideRepeatMode()
+    {
+        repeatModeTitle.SetActive(false);
     }
 }

@@ -10,7 +10,7 @@ public class GameController : MonoBehaviour
     public Config selectedConfig;
     public int score = 0;
     public string playerName;
-    private bool isGameRunning = false;
+    public bool isGameRunning = false;
     private Dictionary<ButtonColorsEnum, GameObject> simonButtonsDict = new Dictionary<ButtonColorsEnum, GameObject>();
 
     [SerializeField] public GameObject playButton;
@@ -36,9 +36,14 @@ public class GameController : MonoBehaviour
 
     public void startGame()
     {
+        //reset buttons dict
+        this.simonButtonsDict.Clear();
         //reset the sequence lists 
         playerInputSequence.Clear();
         gameSequence.Clear();
+        //redraw buttons
+        drawButtonsController.GetComponent<DrawButtons>().deleteButtonsFromSreen();
+        drawButtonsController.GetComponent<DrawButtons>().drawButtons(selectedConfig);
         //reset score 
         updateScore(0);
         //reset timer 
@@ -70,9 +75,11 @@ public class GameController : MonoBehaviour
             foreach (ButtonColorsEnum seq in sequence)
             {
                 yield return new WaitForSeconds(speed);
-
-                GameObject btn = this.simonButtonsDict[seq];
-                btn.GetComponent<ButtonController>().highlightState();
+                ButtonColorsEnum value;
+                if (simonButtonsDict.ContainsKey(seq)) {
+                    GameObject btn = this.simonButtonsDict[seq];
+                    btn.GetComponent<ButtonController>().highlightState();
+                }
             }
         }
 
@@ -106,9 +113,16 @@ public class GameController : MonoBehaviour
         }
     }
 
-    public void gameOver()
+    public void gameOver(bool isTimeUp=false)
     {
-        gameOverUi.GetComponent<GameOverController>().show();
+        //show times up title 
+        if (isTimeUp)
+        {
+            gameOverUi.GetComponent<GameOverController>().showTimeIsUp();
+        }
+        else {
+            gameOverUi.GetComponent<GameOverController>().show();
+        }
         leadBoard.GetComponent<LeadBoardController>().AddScoreEntry(score, playerName);
         isGameRunning = false;
         gameUi.GetComponent<GameUiController>().isGameRunning = false;
@@ -125,7 +139,14 @@ public class GameController : MonoBehaviour
             }
         }
         levelSelection.GetComponent<LevelSelectionController>().hide();
-        drawButtonsController.GetComponent<DrawButtons>().drawButtons(selectedConfig);
+        //hide repeat mode
+        if (this.selectedConfig.RepeatMode)
+        {
+            gameUi.GetComponent<GameUiController>().hideRepeatMode();
+        }
+        else {
+            gameUi.GetComponent<GameUiController>().showRepeatMode();
+        }
         startGame();
     }
 

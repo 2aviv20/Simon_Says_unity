@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 
 public class ButtonController : MonoBehaviour
 {
-
+    [SerializeField] GameObject gameController;
     public Material normal, highlight;
     public ButtonColorsEnum colorName;
 
@@ -36,7 +36,7 @@ public class ButtonController : MonoBehaviour
 
     private void OnMouseDown()
     {
-        if (!ishighlight)
+        if (!ishighlight && gameController.GetComponent<GameController>().isGameRunning)
         {
             highlightState();
             FindObjectOfType<GameController>().onButtonPressed(colorName);

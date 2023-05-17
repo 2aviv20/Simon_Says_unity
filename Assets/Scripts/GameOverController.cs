@@ -5,12 +5,22 @@ using UnityEngine;
 
 public class GameOverController : MonoBehaviour
 {
+
     [SerializeField] public GameObject gameController;
     [SerializeField] public GameObject gameOverTitle;
+    [SerializeField] public GameObject timeIsUpTitle;
+
 
     public void hide()
     {
         gameObject.SetActive(false);
+        gameOverTitle.SetActive(false);
+
+    }
+
+    public void hideTimeIsUp(){
+        gameObject.SetActive(false);
+        timeIsUpTitle.SetActive(false);
     }
 
     public void show()
@@ -21,6 +31,12 @@ public class GameOverController : MonoBehaviour
         Invoke("hide", 2f);
     }
 
+    public void showTimeIsUp()
+    {
+        gameObject.SetActive(true);
+        timeIsUpTitle.SetActive(true);
+        Invoke("hideTimeIsUp", 2f);
+    }
 
     public void onPlayAgain()
     {
@@ -34,5 +50,7 @@ public class GameOverController : MonoBehaviour
     {
         gameObject.SetActive(false);
         gameOverTitle.SetActive(false);
+        timeIsUpTitle.SetActive(false);
+
     }
 }
